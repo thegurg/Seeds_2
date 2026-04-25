@@ -43,6 +43,7 @@
         
         body {
             font-family: 'VT323', 'Courier New', monospace, sans-serif !important;
+            -webkit-font-smoothing: none;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
@@ -111,12 +112,15 @@
             align-items: center;
             gap: 12px;
             font-family: 'Press Start 2P', 'VT323', monospace, sans-serif !important;
-            font-size: 1rem;
-            color: var(--accent-primary) !important;
+            font-size: 1.2rem;
+            color: #2F1810 !important;
             text-shadow: 2px 2px 0 var(--border-dark);
+            height: auto !important;
+            min-height: 48px;
             width: auto;
             min-width: fit-content;
             white-space: nowrap;
+            overflow: visible !important;
             opacity: 1 !important;
             visibility: visible !important;
             z-index: 10;
@@ -124,6 +128,12 @@
         
         .logo-icon {
             font-size: 1.5rem;
+        }
+        
+        .logo span {
+            font-size: 1.5rem;
+            color: #2F1810 !important;
+            z-index: 999;
         }
         
         /* Copy URL Button */
@@ -142,10 +152,12 @@
             cursor: pointer;
             transition: all 0.1s;
             box-shadow: 2px 2px 0 var(--border-dark);
+            height: auto !important;
             min-height: 44px;
             width: auto;
             min-width: fit-content;
             white-space: nowrap;
+            overflow: visible !important;
             opacity: 1 !important;
             visibility: visible !important;
         }
@@ -207,7 +219,7 @@
             z-index: 1;
         }
         
-        .tab {
+.tab {
             flex: 1;
             display: flex;
             align-items: center;
@@ -222,11 +234,13 @@
             font-size: 0.55rem;
             cursor: pointer;
             transition: all 0.1s;
-            box-shadow: 0 -2px 0 rgba(0,0,0, 0.2);
+            box-shadow: 0 -2px 0 rgba(0,0,0,0.2);
+            height: auto !important;
             min-height: 48px;
             width: auto;
             min-width: fit-content;
             white-space: nowrap;
+            overflow: visible !important;
             opacity: 1 !important;
             visibility: visible !important;
         }
@@ -249,10 +263,18 @@
             z-index: 5;
         }
         
-        .tab-icon {
+.tab-icon {
             font-size: 1.2rem;
         }
-        
+
+        .tab span:not(.tab-icon),
+        .btn-copy span:not(.tab-icon) {
+            display: flex;
+            color: #2F1810 !important;
+            font-size: 12px !important;
+            z-index: 999;
+        }
+
         /* Tab Content */
         .tab-content {
             flex: 1;
@@ -857,6 +879,10 @@
                 white-space: nowrap;
             }
             
+            .tab span:last-child {
+                font-size: 8px !important;
+            }
+            
             .btn-copy {
                 flex-direction: column;
                 gap: 4px;
@@ -903,16 +929,32 @@
             }
             
             /* Center icon and text vertically */
-            .tab span {
-                display: none;
+            .tab span:not(.tab-icon) {
+                display: flex;
+                flex-direction: column;
+                font-size: 8px !important;
+                color: #2F1810 !important;
+            }
+            
+            .btn-copy span:not(.tab-icon) {
+                display: flex;
+                flex-direction: column;
+                font-size: 8px !important;
+                color: #2F1810 !important;
             }
             
             .logo span:last-child {
-                display: none;
+                display: flex;
+                flex-direction: column;
+                font-size: 14px !important;
+                color: #2F1810 !important;
             }
             
             .btn-copy span:last-child {
-                display: none;
+                display: flex;
+                flex-direction: column;
+                font-size: 8px !important;
+                color: #2F1810 !important;
             }
             
             /* Peer card stacking */
@@ -933,7 +975,10 @@
             }
             
             .tab span {
-                display: none;
+                display: flex;
+                color: #2F1810 !important;
+                font-size: 12px !important;
+                z-index: 999;
             }
             
             .tab {
@@ -951,11 +996,17 @@
             }
             
             .logo span {
-                display: none;
+                display: flex;
+                flex-direction: column;
+                font-size: 14px !important;
+                color: #2F1810 !important;
             }
             
             .btn-copy span {
-                display: none;
+                display: flex;
+                flex-direction: column;
+                font-size: 8px !important;
+                color: #2F1810 !important;
             }
         }
     </style>

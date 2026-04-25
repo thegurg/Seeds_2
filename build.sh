@@ -16,23 +16,23 @@ mkdir -p dist
 
 # Linux AMD64
 echo "Building for Linux AMD64..."
-GOOS=linux GOARCH=amd64 go build -ldflags="$LDFLAGS" -o "dist/filetransfer-linux-amd64" .
+GOOS=linux GOARCH=amd64 go build -ldflags="$LDFLAGS" -o "dist/seeds-linux-amd64" .
 
 # Linux ARM64
 echo "Building for Linux ARM64..."
-GOOS=linux GOARCH=arm64 go build -ldflags="$LDFLAGS" -o "dist/filetransfer-linux-arm64" .
+GOOS=linux GOARCH=arm64 go build -ldflags="$LDFLAGS" -o "dist/seeds-linux-arm64" .
 
 # Windows AMD64
 echo "Building for Windows AMD64..."
-GOOS=windows GOARCH=amd64 go build -ldflags="$LDFLAGS" -o "dist/filetransfer-windows-amd64.exe" .
+GOOS=windows GOARCH=amd64 go build -ldflags="$LDFLAGS" -o "dist/seeds-windows-amd64.exe" .
 
 # Windows ARM64
 echo "Building for Windows ARM64..."
-GOOS=windows GOARCH=arm64 go build -ldflags="$LDFLAGS" -o "dist/filetransfer-windows-arm64.exe" .
+GOOS=windows GOARCH=arm64 go build -ldflags="$LDFLAGS" -o "dist/seeds-windows-arm64.exe" .
 
 # Linux ARM (Raspberry Pi, etc.)
 echo "Building for Linux ARM..."
-GOOS=linux GOARCH=arm go build -ldflags="$LDFLAGS" -o "dist/filetransfer-linux-arm" .
+GOOS=linux GOARCH=arm go build -ldflags="$LDFLAGS" -o "dist/seeds-linux-arm" .
 
 echo ""
 echo "✅ All builds complete! Binaries in ./dist/"
