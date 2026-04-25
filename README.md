@@ -1,87 +1,71 @@
-# File Transfer Application
+# 🌱 Seeds
 
-A high-speed, cross-platform file transfer application for local networks using Go, mDNS discovery, and HTTP streaming.
+**Seeds** is a lightweight, self-hosted file-sharing utility written in **Go**. It replaces boring, corporate file-transfer tools with a cozy, gamified "Digital Garden" experience.
 
-## Features
+## ✨ Features
 
-- **Automatic Discovery**: Uses mDNS (`_projectzero._tcp`) to automatically discover peers on the network
-- **Memory Efficient**: Streams files using `io.CopyBuffer` with a 32KB buffer - handles 50GB+ files using only ~20MB RAM
-- **Resume Support**: Downloads support HTTP range requests for resuming interrupted transfers
-- **Cross-Platform**: Works on Windows, Linux, and Android
-- **Web UI**: Modern drag-and-drop interface with progress tracking
+- **Pixel Art UI:** A unique, retro-inspired interface using the "Press Start 2P" aesthetic.
+    
+- **Zero Dependencies:** Compiled into a single binary. No need for Python, Node.js, or external databases.
+    
+- **True Portability:** Runs on Windows, Linux (Arch, Debian, etc.), and ARM devices (Raspberry Pi).
+    
+- **Automatic Setup:** The application automatically generates `downloads` and `shared` directories on the first launch.
+    
+- **Privacy-Centric:** Your data never leaves your local network. No third-party servers involved.
+    
 
-## Directory Structure
+## 🚀 Quick Start
+
+1. Download the binary for your OS from the `dist/` folder.
+    
+2. Launch the executable:
+    
+    Bash
+    
+    ```
+    ./seeds
+    ```
+    
+3. Open your browser at: `http://localhost:8080` (or use your machine's local IP).
+    
+4. **SOW:** Upload a file to the "garden."
+    
+5. **HARVEST:** Download shared files on any other device in your network.
+    
+
+## 🛠 Tech Stack
+
+- **Backend:** [Go (Golang)](https://go.dev/) — chosen for its high performance, low memory footprint, and easy cross-compilation.
+    
+- **Frontend:** Pure HTML5 / CSS3 — optimized for pixel-perfect rendering using `image-rendering: pixelated`.
+    
+- **Typography:** [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) for that authentic 8-bit feel.
+    
+
+## 📁 Project Structure
+
+Plaintext
 
 ```
-./shared       - Files available for download
-./downloads    - Incoming files are saved here
+seeds/
+├── dist/               # Pre-compiled binaries for all platforms
+├── shared/             # Files currently being shared
+├── downloads/          # Destination for incoming files
+├── main.go             # The core Go server logic
+└── index.html          # The pixel-art frontend
 ```
 
-## Usage
+## 🏗 Build from Source
 
-```bash
-# Run with auto-detected port
-./filetransfer
+If you want to customize the garden or build it yourself:
 
-# Run with specific port
-./filetransfer -port 8080
+Bash
+
+```
+git clone https://github.com/thegurg/Seeds_2.git
+cd Seeds_2
+go build -o seeds main.go
 ```
 
-Then open your browser to `http://localhost:<port>` (port will be displayed in console).
-
-## Building
-
-### Linux (AMD64)
-
-```bash
-GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o filetransfer-linux-amd64 .
-```
-
-### Windows (AMD64)
-
-```bash
-GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o filetransfer-windows-amd64.exe .
-```
-
-### Android
-
-Building for Android requires the `gomobile` tool:
-
-1. Install gomobile:
-```bash
-go install golang.org/x/mobile/cmd/gomobile@latest
-gomobile init
-```
-
-2. Build the APK:
-```bash
-gomobile build -target=android -o filetransfer.apk .
-```
-
-**Note**: The application will request external storage permissions at runtime on Android. Downloads are saved to the standard Downloads folder (`/sdcard/Download/FileTransfer/`).
-
-## API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Web UI |
-| `/peers` | GET | JSON list of discovered peers |
-| `/files` | GET | JSON list of files in `./shared` |
-| `/upload` | POST | Upload file (streamed to `./downloads`) |
-| `/download/{filename}` | GET | Download file with range support |
-
-## Architecture
-
-- **mDNS Discovery**: Registers as `_projectzero._tcp` and scans for other nodes
-- **HTTP Server**: Serves UI and handles file transfers
-- **Memory Management**: Uses `io.CopyBuffer` for constant memory usage regardless of file size
-- **Concurrency**: Supports multiple simultaneous uploads/downloads via goroutines
-
-## Requirements
-
-- Go 1.21 or later
-- For Android: Android SDK and gomobile
-
-## License
-
-MIT
+---
