@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4F7942">
+    <title>Seeds - Garden File Transfer</title>
+    
+    <!-- QR Code Generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+        
+        /* CSS Reset & Variables */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            image-rendering: pixelated;
+        }
+        
+        :root {
+            --bg-primary: #4F7942;
+            --bg-card: #8B7355;
+            --bg-card-light: #A0855;
+            --border-dark: #3E2723;
+            --border-medium: #5D4037;
+            --text-primary: #2F1810 !important;
+            --text-secondary: #5D4037;
+            --text-muted: #795548;
+            --accent-primary: #6B8E23;
+            --accent-secondary: #DAA520;
+            --success: #228B22;
+            --error: #B22222;
+            --warning: #FF8C00;
+        }
+        
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        body {
+            font-family: 'VT323', 'Courier New', monospace, sans-serif !important;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='20' height='20' fill='%234F7942'/%3E%3Ccircle cx='2' cy='18' r='1' fill='%233D8B37' opacity='0.3'/%3E%3Ccircle cx='12' cy='6' r='1' fill='%233D8B37' opacity='0.3'/%3E%3C/svg%3E");
+        }
+        
+        /* Vignette Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.3) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Pixel Snail Animation */
+        .snail {
+            position: fixed;
+            bottom: 20px;
+            left: -60px;
+            font-size: 24px;
+            z-index: 2;
+            animation: snailCrawl 60s linear infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes snailCrawl {
+            0% { left: -60px; }
+            100% { left: calc(100vw + 60px); }
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 4px solid var(--border-dark);
+            border-radius: 4px;
+            box-shadow: 
+                inset 0 2px 0 rgba(255, 255, 255, 0.1),
+                4px 4px 0 var(--border-dark);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Press Start 2P', 'VT323', monospace, sans-serif !important;
+            font-size: 1rem;
+            color: var(--accent-primary) !important;
+            text-shadow: 2px 2px 0 var(--border-dark);
+            width: auto;
+            min-width: fit-content;
+            white-space: nowrap;
+            opacity: 1 !important;
+            visibility: visible !important;
+            z-index: 10;
+        }
+        
+        .logo-icon {
+            font-size: 1.5rem;
+        }
+        
+        /* Copy URL Button */
+        .btn-copy {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: var(--bg-card-light);
+            border: 3px solid var(--border-dark);
+            border-radius: 4px;
+            color: var(--text-primary) !important;
+            font-family: 'Press Start 2P', 'VT323', monospace, sans-serif !important;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 2px 2px 0 var(--border-dark);
+            min-height: 44px;
+            width: auto;
+            min-width: fit-content;
+            white-space: nowrap;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .btn-copy:hover {
+            background: var(--accent-secondary);
+            color: var(--text-primary);
+        }
+        
+        .btn-copy:hover::after {
+            /* No emoji - using CSS only */
+        }
+        
+        .btn-copy:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 var(--border-dark);
+        }
+        
+        /* Main Card - Wooden Planter Box */
+        .garden-card {
+            background: var(--bg-card);
+            border: 4px solid var(--border-dark);
+            border-radius: 4px;
+            box-shadow: 
+                inset 0 2px 0 rgba(255, 255, 255, 0.1),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.2),
+                4px 4px 0 var(--border-dark),
+                8px 8px 16px rgba(0, 0, 0, 0.3);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Wood plank texture overlay */
+        .garden-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                rgba(0, 0, 0, 0.05) 20px,
+                rgba(0, 0, 0, 0.05) 21px
+            );
+            pointer-events: none;
+        }
+        
+        /* Tabs - Garden Tool Bar */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            padding: 12px;
+            background: var(--border-medium);
+            border-bottom: 4px solid var(--border-dark);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 8px;
+            background: var(--bg-card);
+            border: 3px solid var(--border-dark);
+            border-radius: 4px 4px 0 0;
+            color: var(--text-secondary) !important;
+            font-family: 'Press Start 2P', 'VT323', monospace, sans-serif !important;
+            font-size: 0.55rem;
+            cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 0 -2px 0 rgba(0,0,0, 0.2);
+            min-height: 48px;
+            width: auto;
+            min-width: fit-content;
+            white-space: nowrap;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .tab:hover {
+            background: var(--accent-secondary);
+            color: var(--text-primary);
+        }
+        
+        .tab:active {
+            transform: translateY(2px);
+        }
+        
+        .tab.active {
+            background: var(--bg-card-light);
+            color: var(--accent-primary) !important;
+            border-bottom: none;
+            box-shadow: none;
+            padding-bottom: 15px;
+            z-index: 5;
+        }
+        
+        .tab-icon {
+            font-size: 1.2rem;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            flex: 1;
+            padding: 20px;
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s steps(5);
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Upload Zone - Seed Packet */
+        .seed-zone {
+            border: 4px dashed var(--border-medium);
+            border-radius: 8px;
+            padding: 48px 24px;
+            text-align: center;
+            transition: all 0.2s steps(3);
+            cursor: pointer;
+            background: 
+                radial-gradient(ellipse at 50% 100%, rgba(139, 115, 85, 0.3) 0%, transparent 70%),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(0, 0, 0, 0.03) 10px,
+                    rgba(0, 0, 0, 0.03) 11px
+                );
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Grass decorations */
+        .seed-zone::before,
+        .seed-zone::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            opacity: 0.6;
+        }
+        
+        .seed-zone::before {
+            top: 8px;
+            left: 8px;
+            background: url("data:image/svg+xml,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='8' width='4' height='12' fill='%23228B22'/%3E%3Crect x='6' y='10' width='4' height='4' fill='%236B8E23'/%3E%3Crect x='14' y='9' width='4' height='5' fill='%236B8E23'/%3E%3C/svg%3E");
+            background-size: contain;
+        }
+        
+        .seed-zone::after {
+            bottom: 8px;
+            right: 8px;
+            background: url("data:image/svg+xml,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='8' width='4' height='12' fill='%23228B22'/%3E%3Crect x='6' y='10' width='4' height='4' fill='%236B8E23'/%3E%3Crect x='14' y='9' width='4' height='5' fill='%236B8E23'/%3E%3C/svg%3E");
+            background-size: contain;
+            transform: scaleX(-1);
+        }
+        
+        .seed-zone:hover,
+        .seed-zone.drag-over {
+            border-color: var(--accent-primary);
+            background-color: rgba(107, 142, 35, 0.1);
+            transform: scale(1.01);
+        }
+        
+        .seed-zone-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+            animation: bobble 2s ease-in-out infinite;
+        }
+        
+        @keyframes bobble {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .seed-zone-text {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .seed-zone-hint {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+        
+        /* Upload Progress */
+        .uploads-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .upload-item {
+            background: var(--bg-card-light);
+            border: 3px solid var(--border-dark);
+            border-radius: 4px;
+            padding: 16px;
+            box-shadow: 2px 2px 0 var(--border-dark);
+            animation: slideIn 0.3s steps(4);
+        }
+        
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateX(-20px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        
+        .upload-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .upload-file {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .upload-file-icon {
+            font-size: 1.3rem;
+        }
+        
+        .upload-status {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .upload-status.uploading { color: var(--accent-primary); }
+        .upload-status.complete { color: var(--success); }
+        .upload-status.error { color: var(--error); }
+        
+        .upload-progress {
+            height: 8px;
+            background: var(--border-medium);
+            border: 2px solid var(--border-dark);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .upload-progress-bar {
+            height: 100%;
+            background: #5D4037;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='4' y='0' width='2' height='8' fill='%23228B22'/%3E%3Crect x='2' y='2' width='2' height='6' fill='%236B8E23'/%3E%3Crect x='6' y='1' width='2' height='4' fill='%236B8E23'/%3E%3C/svg%3E");
+            background-size: 10px 100%;
+            border-radius: 2px;
+            transition: width 0.3s steps(10);
+            position: relative;
+        }
+        
+        /* Growing vine animation */
+        .upload-progress-bar::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background: #228B22;
+            animation: vineGrow 0.5s steps(3) infinite;
+            box-shadow: 0 0 4px rgba(34, 139, 34, 0.5);
+        }
+        
+        @keyframes vineGrow {
+            0%, 100% { opacity: 0.5; transform: scaleX(1); }
+            50% { opacity: 1; transform: scaleX(1.2); }
+        }
+        
+        .upload-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .upload-speed {
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+        
+        /* File Lists - Harvest Basket */
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: var(--bg-card-light);
+            border: 3px solid var(--border-dark);
+            border-radius: 4px;
+            transition: all 0.1s;
+            box-shadow: 2px 2px 0 var(--border-dark);
+        }
+        
+        .file-item:hover {
+            background: rgba(218, 165, 32, 0.2);
+            transform: translateX(4px);
+        }
+        
+        .file-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--border-dark);
+            border-radius: 4px;
+        }
+        
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .file-name {
+            font-size: 1.2rem;
+            font-weight: 500;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            color: var(--text-primary) !important;
+        }
+        
+        .file-size {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .file-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: var(--accent-primary);
+            border: 3px solid var(--border-dark);
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.1s;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+            box-shadow: 2px 2px 0 var(--border-dark);
+        }
+        
+        .file-action:hover {
+            background: var(--accent-secondary);
+            transform: scale(1.05);
+        }
+        
+        .file-action:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 var(--border-dark);
+        }
+        
+        /* Peer Cards - Gardeners */
+        .peer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .peer-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: var(--bg-card-light);
+            border: 3px solid var(--border-dark);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.1s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 2px 2px 0 var(--border-dark);
+        }
+        
+        .peer-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(107, 142, 35, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .peer-card:hover::before {
+            opacity: 1;
+        }
+        
+        .peer-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 var(--border-dark);
+        }
+        
+        .peer-card:active {
+            transform: translateY(0);
+            box-shadow: 0 0 0 var(--border-dark);
+        }
+        
+        .peer-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--border-dark);
+            border-radius: 4px;
+        }
+        
+        .peer-info {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .peer-name {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.6rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .peer-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            color: var(--success);
+            background: rgba(34, 139, 34, 0.1);
+            padding: 2px 8px;
+            border: 2px solid var(--success);
+            border-radius: 2px;
+        }
+        
+        .peer-address {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-family: 'VT323', monospace;
+        }
+        
+        .peer-send {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: var(--accent-primary);
+            border: 3px solid var(--border-dark);
+            border-radius: 4px;
+            color: white;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.5rem;
+            cursor: pointer;
+            transition: all 0.1s;
+            flex-shrink: 0;
+            box-shadow: 2px 2px 0 var(--border-dark);
+        }
+        
+        .peer-send:hover {
+            background: var(--accent-secondary);
+            transform: scale(1.05);
+        }
+        
+        .peer-send:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 var(--border-dark);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-muted);
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin: 0 auto 16px;
+            opacity: 0.6;
+            display: block;
+        }
+        
+        /* Server Address & Connected */
+        .server-address, .connected-devices {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(62, 39, 35, 0.3);
+            border-top: 4px solid var(--border-dark);
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+        }
+        
+        .server-address-label, .connected-label {
+            color: var(--text-muted);
+        }
+        
+        #serverAddressText {
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+        
+        #connectedList {
+            color: var(--warning);
+            font-weight: 500;
+        }
+        
+        /* QR Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(47, 24, 16, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s steps(5);
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 4px solid var(--border-dark);
+            border-radius: 8px;
+            padding: 32px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 
+                4px 4px 0 var(--border-dark),
+                8px 8px 32px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s steps(5);
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .modal-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 24px;
+        }
+        
+        #qrCanvas {
+            display: block;
+            margin: 0 auto 20px;
+            border: 4px solid var(--border-dark);
+            border-radius: 4px;
+            background: white;
+            padding: 12px;
+        }
+        
+        .modal-url {
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px 16px;
+            border: 3px solid var(--border-dark);
+            border-radius: 4px;
+            word-break: break-all;
+            margin-bottom: 20px;
+        }
+        
+        .modal-close {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-card-light);
+            border: 3px solid var(--border-dark);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 2px 2px 0 var(--border-dark);
+        }
+        
+        .modal-close:hover {
+            background: var(--accent-secondary);
+        }
+        
+        .modal-close:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 var(--border-dark);
+        }
+        
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            left: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 999;
+            pointer-events: none;
+        }
+        
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 4px solid var(--border-dark);
+            border-radius: 8px;
+            box-shadow: 4px 4px 0 var(--border-dark), 8px 8px 32px rgba(0, 0, 0, 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s steps(6);
+            pointer-events: auto;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .toast.success { border-color: var(--success); }
+        .toast.error { border-color: var(--error); }
+        .toast.warning { border-color: var(--warning); }
+        
+        .toast-message {
+            flex: 1;
+            font-size: 1.1rem;
+        }
+        
+        /* Hidden inputs */
+        #fileInput, #peerFileInput {
+            display: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            /* Reduce Press Start 2P font size */
+            .logo {
+                font-size: 12px;
+                width: auto;
+                min-width: fit-content;
+            }
+            
+            .tab {
+                font-size: 8px;
+                flex-direction: column;
+                gap: 4px;
+                white-space: nowrap;
+            }
+            
+            .btn-copy {
+                flex-direction: column;
+                gap: 4px;
+                white-space: nowrap;
+                font-size: 8px;
+            }
+            
+            /* Container padding */
+            .container {
+                padding: 12px;
+            }
+            
+            /* Stack tab buttons vertically with centered content */
+            .tabs {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .tab {
+                width: auto;
+                min-width: fit-content;
+                padding: 10px 8px;
+                min-height: 52px;
+            }
+            
+            /* Add padding: 10px to all buttons for finger-friendly */
+            .btn-copy {
+                padding: 10px 12px;
+                min-height: 44px;
+            }
+            
+            .modal-close {
+                padding: 10px 16px;
+                min-height: 44px;
+            }
+            
+            .peer-send {
+                padding: 10px 16px;
+                min-height: 44px;
+            }
+            
+            .file-action {
+                min-height: 44px;
+            }
+            
+            /* Center icon and text vertically */
+            .tab span {
+                display: none;
+            }
+            
+            .logo span:last-child {
+                display: none;
+            }
+            
+            .btn-copy span:last-child {
+                display: none;
+            }
+            
+            /* Peer card stacking */
+            .peer-card {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            
+            .peer-send {
+                width: 100%;
+                margin-top: 8px;
+            }
+        }
+            
+            .tabs {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .tab span {
+                display: none;
+            }
+            
+            .tab {
+                min-height: 44px;
+            }
+            
+            .peer-card {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            
+            .peer-send {
+                width: 100%;
+                margin-top: 8px;
+            }
+            
+            .logo span {
+                display: none;
+            }
+            
+            .btn-copy span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG Sprite Sheet - Pixel Art Icons -->
+    <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-sprout" viewBox="0 0 16 16">
+            <!-- Pixel art sprout -->
+            <rect x="7" y="8" width="2" height="6" fill="#6B8E23"/>
+            <rect x="5" y="6" width="2" height="2" fill="#228B22"/>
+            <rect x="9" y="5" width="2" height="3" fill="#228B22"/>
+            <rect x="4" y="4" width="2" height="2" fill="#228B22"/>
+            <rect x="10" y="3" width="2" height="2" fill="#228B22"/>
+            <rect x="6" y="2" width="4" height="2" fill="#228B22"/>
+        </symbol>
+        
+        <symbol id="icon-basket" viewBox="0 0 16 16">
+            <!-- Pixel art basket -->
+            <rect x="3" y="6" width="10" height="8" fill="#DAA520"/>
+            <rect x="2" y="5" width="12" height="2" fill="#5D4037"/>
+            <rect x="4" y="8" width="2" height="2" fill="#8B4513"/>
+            <rect x="7" y="8" width="2" height="2" fill="#8B4513"/>
+            <rect x="10" y="8" width="2" height="2" fill="#8B4513"/>
+            <rect x="4" y="10" width="2" height="2" fill="#8B4513"/>
+            <rect x="7" y="10" width="2" height="2" fill="#8B4513"/>
+            <rect x="10" y="10" width="2" height="2" fill="#8B4513"/>
+        </symbol>
+        
+        <symbol id="icon-gardener" viewBox="0 0 16 16">
+            <!-- Pixel art character with hat -->
+            <rect x="6" y="2" width="4" height="2" fill="#3E2723"/>
+            <rect x="5" y="4" width="6" height="4" fill="#DAA520"/>
+            <rect x="6" y="8" width="4" height="4" fill="#6B8E23"/>
+            <rect x="4" y="12" width="3" height="2" fill="#5D4037"/>
+            <rect x="9" y="12" width="3" height="2" fill="#5D4037"/>
+        </symbol>
+        
+        <symbol id="icon-paper" viewBox="0 0 16 16">
+            <!-- Pixel art paper -->
+            <rect x="3" y="2" width="10" height="12" fill="#F5DEB3" stroke="#5D4037" stroke-width="1"/>
+            <rect x="5" y="4" width="6" height="1" fill="#5D4037"/>
+            <rect x="5" y="6" width="6" height="1" fill="#5D4037"/>
+            <rect x="5" y="8" width="4" height="1" fill="#5D4037"/>
+        </symbol>
+        
+        <symbol id="icon-snail" viewBox="0 0 16 16">
+            <!-- Pixel art snail -->
+            <rect x="2" y="6" width="8" height="6" fill="#8B7355"/>
+            <rect x="3" y="5" width="6" height="2" fill="#A0855"/>
+            <rect x="4" y="4" width="4" height="2" fill="#F5DEB3"/>
+            <rect x="5" y="3" width="2" height="2" fill="#F5DEB3"/>
+            <rect x="9" y="8" width="2" height="2" fill="#5D4037"/>
+            <rect x="11" y="8" width="2" height="2" fill="#5D4037"/>
+        </symbol>
+        
+        <symbol id="icon-grass" viewBox="0 0 16 16">
+            <!-- Pixel art grass blade -->
+            <rect x="7" y="4" width="2" height="10" fill="#228B22"/>
+            <rect x="5" y="6" width="2" height="2" fill="#6B8E23"/>
+            <rect x="9" y="5" width="2" height="3" fill="#6B8E23"/>
+            <rect x="11" y="7" width="2" height="2" fill="#228B22"/>
+        </symbol>
+        
+        <symbol id="icon-search" viewBox="0 0 16 16">
+            <!-- Pixel art search icon -->
+            <rect x="2" y="2" width="8" height="8" fill="none" stroke="#5D4037" stroke-width="2"/>
+            <rect x="10" y="10" width="4" height="2" fill="#5D4037"/>
+        </symbol>
+    
+        <symbol id="icon-image" viewBox="0 0 16 16">
+            <!-- Pixel art image file -->
+            <rect x="2" y="2" width="12" height="12" fill="#F5DEB3" stroke="#5D4037" stroke-width="1"/>
+            <rect x="4" y="4" width="3" height="2" fill="#228B22"/>
+            <rect x="8" y="4" width="4" height="3" fill="#DAA520"/>
+            <rect x="4" y="8" width="8" height="2" fill="#795548"/>
+        </symbol>
+    
+        <symbol id="icon-video" viewBox="0 0 16 16">
+            <!-- Pixel art video file -->
+            <rect x="1" y="3" width="14" height="10" fill="#3E2723"/>
+            <rect x="3" y="5" width="4" height="3" fill="#228B22"/>
+            <rect x="9" y="5" width="4" height="3" fill="#DAA520"/>
+            <rect x="6" y="10" width="4" height="1" fill="#6B8E23"/>
+        </symbol>
+    
+        <symbol id="icon-audio" viewBox="0 0 16 16">
+            <!-- Pixel art audio file -->
+            <rect x="4" y="2" width="8" height="12" fill="#F5DEB3" stroke="#5D4037" stroke-width="1"/>
+            <rect x="6" y="4" width="4" height="2" fill="#6B8E23"/>
+            <rect x="6" y="7" width="4" height="2" fill="#6B8E23"/>
+            <rect x="6" y="10" width="4" height="2" fill="#6B8E23"/>
+        </symbol>
+    
+        <symbol id="icon-archive" viewBox="0 0 16 16">
+            <!-- Pixel art archive file -->
+            <rect x="3" y="2" width="10" height="12" fill="#DAA520"/>
+            <rect x="2" y="4" width="12" height="2" fill="#5D4037"/>
+            <rect x="5" y="7" width="2" height="4" fill="#8B4513"/>
+            <rect x="9" y="7" width="2" height="4" fill="#8B4513"/>
+        </symbol>
+    
+        <symbol id="icon-code" viewBox="0 0 16 16">
+            <!-- Pixel art code file -->
+            <rect x="3" y="2" width="10" height="12" fill="#2F1810"/>
+            <rect x="5" y="4" width="6" height="1" fill="#6B8E23"/>
+            <rect x="5" y="6" width="6" height="1" fill="#6B8E23"/>
+            <rect x="5" y="8" width="4" height="1" fill="#DAA520"/>
+            <rect x="5" y="10" width="6" height="1" fill="#6B8E23"/>
+        </symbol>
+    
+        <symbol id="icon-document" viewBox="0 0 16 16">
+            <!-- Pixel art document file -->
+            <rect x="3" y="2" width="10" height="12" fill="#F5DEB3" stroke="#5D4037" stroke-width="1"/>
+            <rect x="5" y="4" width="6" height="1" fill="#5D4037"/>
+            <rect x="5" y="6" width="6" height="1" fill="#5D4037"/>
+            <rect x="5" y="8" width="4" height="1" fill="#5D4037"/>
+        </symbol>
+    </svg>
+    
+    <!-- Pixel Snail -->
+    <div class="snail">
+        <svg width="24" height="24"><use href="#icon-snail"/></svg>
+    </div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">
+                    <svg width="24" height="24"><use href="#icon-sprout"/></svg>
+                </span>
+                <span>Seeds</span>
+            </div>
+            <button class="btn-copy tap-target" id="shareBtn">
+                <span>
+                    <svg width="16" height="16"><use href="#icon-paper"/></svg>
+                </span>
+                <span>COPY URL</span>
+            </button>
+        </header>
+
+        <!-- Main Card - Garden -->
+        <main class="garden-card">
+            <!-- Tabs -->
+            <nav class="tabs">
+                <button class="tab active tap-target" data-tab="upload">
+                    <span class="tab-icon">
+                        <svg width="20" height="20"><use href="#icon-sprout"/></svg>
+                    </span>
+                    <span>SOW</span>
+                </button>
+                <button class="tab tap-target" data-tab="downloads">
+                    <span class="tab-icon">
+                        <svg width="20" height="20"><use href="#icon-basket"/></svg>
+                    </span>
+                    <span>HARVEST</span>
+                </button>
+                <button class="tab tap-target" data-tab="peers">
+                    <span class="tab-icon">
+                        <svg width="20" height="20"><use href="#icon-gardener"/></svg>
+                    </span>
+                    <span>GARDENERS</span>
+                </button>
+            </nav>
+
+            <!-- Upload Tab -->
+            <section class="tab-content active" id="uploadTab">
+                <div class="seed-zone tap-target" id="dropZone">
+                    <span class="seed-zone-icon">
+                        <svg width="48" height="48"><use href="#icon-sprout"/></svg>
+                    </span>
+                    <p class="seed-zone-text">Drop seeds here to plant</p>
+                    <p class="seed-zone-hint">or click to browse</p>
+                </div>
+                <input type="file" id="fileInput" multiple>
+                
+                <div class="uploads-container" id="uploadsContainer"></div>
+            </section>
+
+            <!-- Downloads/Harvest Tab -->
+            <section class="tab-content" id="downloadsTab">
+                <div class="file-list" id="downloadsList">
+                    <div class="empty-state">
+                        <span class="empty-state-icon">
+                            <svg width="48" height="48"><use href="#icon-basket"/></svg>
+                        </span>
+                        <p>Harvest is empty!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Peers/Gardeners Tab -->
+            <section class="tab-content" id="peersTab">
+                <div class="peer-list" id="peersList">
+                    <div class="empty-state">
+                        <span class="empty-state-icon">
+                            <svg width="48" height="48"><use href="#icon-search"/></svg>
+                        </span>
+                        <p>Waiting for gardeners...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Server Address -->
+            <div class="server-address">
+                <span class="server-address-label">Garden:</span>
+                <span id="serverAddressText">Growing...</span>
+            </div>
+
+            <!-- Connected Devices -->
+            <div class="connected-devices" id="connectedDevices">
+                <span class="connected-label">Visitors:</span>
+                <span id="connectedList">-</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- QR Modal -->
+    <div class="modal-overlay" id="qrModal">
+        <div class="modal-content">
+            <h3 class="modal-title">
+                <svg width="20" height="20" style="vertical-align: middle; margin-right: 8px;"><use href="#icon-sprout"/></svg>
+                Share Your Garden
+            </h3>
+            <p class="modal-subtitle">Point your device at this code</p>
+            <canvas id="qrCanvas"></canvas>
+            <div class="modal-url" id="serverUrl">http://localhost:8080</div>
+            <button class="modal-close tap-target" id="closeModal">Close</button>
+        </div>
+    </div>
+
+    <!-- Hidden input for peer uploads -->
+    <input type="file" id="peerFileInput">
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ============================================
+        // Seeds - Garden File Transfer UI
+        // ============================================
+
+        // Global state
+        const state = {
+            currentTab: 'upload',
+            uploads: new Map(),
+            peers: [],
+            downloads: [],
+            serverInfo: null,
+            selectedPeer: null
+        };
+
+        // DOM Elements
+        const elements = {
+            dropZone: document.getElementById('dropZone'),
+            fileInput: document.getElementById('fileInput'),
+            peerFileInput: document.getElementById('peerFileInput'),
+            uploadsContainer: document.getElementById('uploadsContainer'),
+            downloadsList: document.getElementById('downloadsList'),
+            peersList: document.getElementById('peersList'),
+            shareBtn: document.getElementById('shareBtn'),
+            qrModal: document.getElementById('qrModal'),
+            closeModal: document.getElementById('closeModal'),
+            qrCanvas: document.getElementById('qrCanvas'),
+            serverUrl: document.getElementById('serverUrl'),
+            serverAddressText: document.getElementById('serverAddressText'),
+            connectedList: document.getElementById('connectedList'),
+            toastContainer: document.getElementById('toastContainer'),
+            tabs: document.querySelectorAll('.tab'),
+            tabContents: document.querySelectorAll('.tab-content')
+        };
+
+        // File extension to SVG icon mapping
+        const fileIcons = {
+            'jpg': 'icon-image', 'jpeg': 'icon-image', 'png': 'icon-image', 'gif': 'icon-image', 
+            'webp': 'icon-image', 'svg': 'icon-image', 'bmp': 'icon-image',
+            'mp4': 'icon-video', 'mov': 'icon-video', 'avi': 'icon-video', 'mkv': 'icon-video',
+            'mp3': 'icon-audio', 'wav': 'icon-audio', 'flac': 'icon-audio', 'ogg': 'icon-audio',
+            'pdf': 'icon-document', 'doc': 'icon-document', 'docx': 'icon-document', 'txt': 'icon-document',
+            'xls': 'icon-document', 'xlsx': 'icon-document', 'csv': 'icon-document',
+            'ppt': 'icon-document', 'pptx': 'icon-document',
+            'zip': 'icon-archive', 'rar': 'icon-archive', '7z': 'icon-archive', 'tar': 'icon-archive',
+            'js': 'icon-code', 'html': 'icon-code', 'css': 'icon-code', 'py': 'icon-code',
+            'exe': 'icon-code', 'msi': 'icon-code', 'dmg': 'icon-code',
+            'apk': 'icon-code', 'ipa': 'icon-code',
+            'default': 'icon-document'
+        };
+
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const iconId = fileIcons[ext] || fileIcons['default'];
+            return `<svg width="24" height="24"><use href="#${iconId}"/></svg>`;
+        }
+
+        function formatSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+            return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + units[i];
+        }
+
+        function formatSpeed(bytesPerSecond) {
+            return formatSize(bytesPerSecond) + '/s';
+        }
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // ============================================
+        // Toast Notifications
+        // ============================================
+
+        function showToast(message, type = 'info', duration = 3000) {
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${icons[type]}</span>
+                <span class="toast-message">${message}</span>
+            `;
+
+            elements.toastContainer.appendChild(toast);
+
+            requestAnimationFrame(() => toast.classList.add('show'));
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, duration);
+        }
+
+        // ============================================
+        // Tab Management
+        // ============================================
+
+        function switchTab(tabName) {
+            state.currentTab = tabName;
+
+            elements.tabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+
+            elements.tabContents.forEach(content => {
+                content.classList.toggle('active', content.id === tabName + 'Tab');
+            });
+
+            if (tabName === 'downloads') loadDownloads();
+            if (tabName === 'peers') loadPeers();
+        }
+
+        elements.tabs.forEach(tab => {
+            tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+        });
+
+        // ============================================
+        // QR Code Modal
+        // ============================================
+
+        async function generateQR() {
+            try {
+                const response = await fetch('/info');
+                const info = await response.json();
+                state.serverInfo = info;
+
+                elements.serverUrl.textContent = info.url;
+
+                QRCode.toCanvas(elements.qrCanvas, info.url, {
+                    width: 280,
+                    margin: 2,
+                    color: {
+                        dark: '#4F7942',
+                        light: '#ffffff'
+                    }
+                }, (error) => {
+                    if (error) {
+                        console.error('QR generation error:', error);
+                        showToast('Failed to grow QR code', 'error');
+                    }
+                });
+
+                elements.qrModal.classList.add('active');
+            } catch (err) {
+                console.error('Failed to get server info:', err);
+                showToast('Failed to reach garden', 'error');
+            }
+        }
+
+        elements.shareBtn.addEventListener('click', () => {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('URL copied to your basket!', 'success');
+            }).catch(() => {
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast('URL copied!', 'success');
+            });
+        });
+
+        elements.closeModal.addEventListener('click', () => {
+            elements.qrModal.classList.remove('active');
+        });
+        elements.qrModal.addEventListener('click', (e) => {
+            if (e.target === elements.qrModal) {
+                elements.qrModal.classList.remove('active');
+            }
+        });
+
+        // ============================================
+        // Drag & Drop
+        // ============================================
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            document.body.addEventListener(eventName, (e) => e.preventDefault());
+        });
+
+        elements.dropZone.addEventListener('dragenter', (e) => {
+            elements.dropZone.classList.add('drag-over');
+        });
+
+        elements.dropZone.addEventListener('dragleave', (e) => {
+            if (!elements.dropZone.contains(e.relatedTarget)) {
+                elements.dropZone.classList.remove('drag-over');
+            }
+        });
+
+        elements.dropZone.addEventListener('drop', (e) => {
+            elements.dropZone.classList.remove('drag-over');
+            const files = Array.from(e.dataTransfer.files);
+            handleLocalUpload(files);
+        });
+
+        elements.dropZone.addEventListener('click', () => {
+            elements.fileInput.click();
+        });
+
+        elements.fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleLocalUpload(files);
+            e.target.value = '';
+        });
+
+        // ============================================
+        // File Upload Handling
+        // ============================================
+
+        function handleLocalUpload(files) {
+            if (files.length === 0) return;
+            files.forEach(file => uploadFileToLocal(file));
+        }
+
+        function createUploadElement(id, filename, size) {
+            const uploadItem = document.createElement('div');
+            uploadItem.className = 'upload-item';
+            uploadItem.id = `upload-${id}`;
+            uploadItem.innerHTML = `
+                <div class="upload-header">
+                    <div class="upload-file">
+                        <span class="upload-file-icon">${getFileIcon(filename)}</span>
+                        <span>${filename}</span>
+                    </div>
+                    <span class="upload-status uploading">Growing...</span>
+                </div>
+                <div class="upload-progress">
+                    <div class="upload-progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="upload-stats">
+                    <span class="upload-percent">0%</span>
+                    <span class="upload-speed">0 KB/s</span>
+                    <span class="upload-size">0 / ${formatSize(size)}</span>
+                </div>
+            `;
+            elements.uploadsContainer.appendChild(uploadItem);
+            return uploadItem;
+        }
+
+        function updateUploadProgress(id, percent, speed, loaded, total) {
+            const uploadItem = document.getElementById(`upload-${id}`);
+            if (!uploadItem) return;
+
+            const progressBar = uploadItem.querySelector('.upload-progress-bar');
+            const percentEl = uploadItem.querySelector('.upload-percent');
+            const speedEl = uploadItem.querySelector('.upload-speed');
+            const sizeEl = uploadItem.querySelector('.upload-size');
+            const statusEl = uploadItem.querySelector('.upload-status');
+
+            progressBar.style.width = percent + '%';
+            percentEl.textContent = percent + '%';
+            speedEl.textContent = formatSpeed(speed);
+            sizeEl.textContent = `${formatSize(loaded)} / ${formatSize(total)}`;
+
+            if (percent >= 100) {
+                statusEl.textContent = 'Planted!';
+                statusEl.className = 'upload-status complete';
+            }
+        }
+
+        function uploadFileToLocal(file) {
+            const uploadId = generateId();
+            const startTime = Date.now();
+            let lastLoaded = 0;
+            let lastTime = startTime;
+
+            createUploadElement(uploadId, file.name, file.size);
+
+            const xhr = new XMLHttpRequest();
+            const formData = new FormData();
+            formData.append('file', file);
+
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const now = Date.now();
+                    const timeDiff = (now - lastTime) / 1000;
+                    
+                    if (timeDiff > 0.1) {
+                        const bytesDiff = e.loaded - lastLoaded;
+                        const speed = bytesDiff / timeDiff;
+                        const percent = Math.round((e.loaded / e.total) * 100);
+
+                        updateUploadProgress(uploadId, percent, speed, e.loaded, e.total);
+
+                        lastLoaded = e.loaded;
+                        lastTime = now;
+                    }
+                }
+            });
+
+            xhr.addEventListener('load', () => {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    updateUploadProgress(uploadId, 100, 0, file.size, file.size);
+                    showToast(`Planted ${file.name}`, 'success');
+                    loadDownloads();
+                } else {
+                    showToast(`Failed to plant ${file.name}`, 'error');
+                }
+            });
+
+            xhr.addEventListener('error', () => {
+                showToast(`Garden error planting ${file.name}`, 'error');
+            });
+
+            xhr.open('POST', '/upload');
+            xhr.send(formData);
+        }
+
+        // ============================================
+        // Peer File Upload (Push to peer)
+        // ============================================
+
+        function uploadFileToPeer(file, peer) {
+            const uploadId = generateId();
+            const startTime = Date.now();
+            let lastLoaded = 0;
+            let lastTime = startTime;
+
+            const uploadItem = document.createElement('div');
+            uploadItem.className = 'upload-item';
+            uploadItem.id = `upload-${uploadId}`;
+            uploadItem.innerHTML = `
+                <div class="upload-header">
+                    <div class="upload-file">
+                        <span class="upload-file-icon">${getFileIcon(file.name)}</span>
+                        <span>${file.name} → ${peer.name}</span>
+                    </div>
+                    <span class="upload-status uploading">Sending...</span>
+                </div>
+                <div class="upload-progress">
+                    <div class="upload-progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="upload-stats">
+                    <span class="upload-percent">0%</span>
+                    <span class="upload-speed">0 KB/s</span>
+                </div>
+            `;
+            elements.uploadsContainer.appendChild(uploadItem);
+
+            switchTab('upload');
+
+            const xhr = new XMLHttpRequest();
+            const formData = new FormData();
+            formData.append('file', file);
+
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const now = Date.now();
+                    const timeDiff = (now - lastTime) / 1000;
+                    
+                    if (timeDiff > 0.1) {
+                        const bytesDiff = e.loaded - lastLoaded;
+                        const speed = bytesDiff / timeDiff;
+                        const percent = Math.round((e.loaded / e.total) * 100);
+
+                        const uploadItem = document.getElementById(`upload-${uploadId}`);
+                        if (uploadItem) {
+                            const progressBar = uploadItem.querySelector('.upload-progress-bar');
+                            const percentEl = uploadItem.querySelector('.upload-percent');
+                            const speedEl = uploadItem.querySelector('.upload-speed');
+
+                            progressBar.style.width = percent + '%';
+                            percentEl.textContent = percent + '%';
+                            speedEl.textContent = formatSpeed(speed);
+                        }
+
+                        lastLoaded = e.loaded;
+                        lastTime = now;
+                    }
+                }
+            });
+
+            xhr.addEventListener('load', () => {
+                const uploadItem = document.getElementById(`upload-${uploadId}`);
+                if (xhr.status === 200) {
+                    if (uploadItem) {
+                        const statusEl = uploadItem.querySelector('.upload-status');
+                        statusEl.textContent = 'Delivered!';
+                        statusEl.className = 'upload-status complete';
+                    }
+                    showToast(`Sent ${file.name} to ${peer.name}`, 'success');
+                } else {
+                    if (uploadItem) {
+                        const statusEl = uploadItem.querySelector('.upload-status');
+                        statusEl.textContent = 'Failed';
+                        statusEl.className = 'upload-status error';
+                    }
+                    showToast(`Failed to reach ${peer.name}`, 'error');
+                }
+            });
+
+            xhr.addEventListener('error', () => {
+                const uploadItem = document.getElementById(`upload-${uploadId}`);
+                if (uploadItem) {
+                    const statusEl = uploadItem.querySelector('.upload-status');
+                    statusEl.textContent = 'Error';
+                    statusEl.className = 'upload-status error';
+                }
+                showToast(`Network error with ${peer.name}`, 'error');
+            });
+
+            const peerUrl = `http://${peer.ip}:${peer.port}/upload`;
+            xhr.open('POST', peerUrl);
+            xhr.send(formData);
+        }
+
+        // ============================================
+        // Data Fetching
+        // ============================================
+
+        async function loadPeers() {
+            try {
+                const response = await fetch('/peers');
+                const peers = await response.json();
+                state.peers = peers;
+                renderPeers();
+            } catch (err) {
+                console.error('Failed to load gardeners:', err);
+            }
+        }
+
+        function renderPeers() {
+            if (state.peers.length === 0) {
+                elements.peersList.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-state-icon">
+                            <svg width="48" height="48"><use href="#icon-search"/></svg>
+                        </span>
+                        <p>Waiting for gardeners...</p>
+                    </div>
+                `;
+                return;
+            }
+
+            elements.peersList.innerHTML = state.peers.map(peer => `
+                <div class="peer-card" data-peer='${JSON.stringify(peer).replace(/'/g, '&apos;')}'>
+                    <div class="peer-icon">
+                        <svg width="48" height="48"><use href="#icon-gardener"/></svg>
+                    </div>
+                    <div class="peer-info">
+                        <div class="peer-name">
+                            ${escapeHtml(peer.name)}
+                            <span class="peer-status">Online</span>
+                        </div>
+                        <div class="peer-address">${peer.ip}:${peer.port}</div>
+                    </div>
+                    <button class="peer-send" onclick="handlePeerSend(this)">
+                        <svg width="16" height="16"><use href="#icon-gardener"/></svg>
+                        Send
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function handlePeerSend(button) {
+            const peerCard = button.closest('.peer-card');
+            const peerData = peerCard.dataset.peer;
+            const peer = JSON.parse(peerData);
+
+            state.selectedPeer = peer;
+            elements.peerFileInput.click();
+        }
+
+        elements.peerFileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length > 0 && state.selectedPeer) {
+                files.forEach(file => {
+                    uploadFileToPeer(file, state.selectedPeer);
+                });
+            }
+            e.target.value = '';
+            state.selectedPeer = null;
+        });
+
+        async function loadDownloads() {
+            try {
+                const response = await fetch('/downloads');
+                const files = await response.json();
+                state.downloads = files;
+                renderDownloads();
+            } catch (err) {
+                console.error('Failed to load harvest:', err);
+            }
+        }
+
+        function renderDownloads() {
+            if (state.downloads.length === 0) {
+                elements.downloadsList.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-state-icon">
+                            <svg width="48" height="48"><use href="#icon-basket"/></svg>
+                        </span>
+                        <p>Harvest is empty!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            elements.downloadsList.innerHTML = state.downloads.map(file => `
+                <div class="file-item">
+                    <div class="file-icon">
+                        ${getFileIcon(file.name)}
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">${escapeHtml(file.name)}</div>
+                        <div class="file-size">${formatSize(file.size)}</div>
+                    </div>
+                    <a href="/download/${encodeURIComponent(file.name)}" 
+                       class="file-action" 
+                       download 
+                       title="Harvest">
+                        ⬇️
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============================================
+        // Initialization
+        // ============================================
+
+        function init() {
+            loadPeers();
+            loadDownloads();
+            displayServerAddress();
+            loadConnected();
+
+            setInterval(loadPeers, 3000);
+            setInterval(loadDownloads, 10000);
+            setInterval(loadConnected, 5000);
+
+            setTimeout(() => {
+                showToast('Welcome to Seeds! Grow your garden.', 'info', 5000);
+            }, 500);
+        }
+
+        async function displayServerAddress() {
+            try {
+                const response = await fetch('/info');
+                const info = await response.json();
+                elements.serverAddressText.textContent = info.url;
+            } catch (err) {
+                elements.serverAddressText.textContent = 'Lost in the garden';
+            }
+        }
+
+        async function loadConnected() {
+            try {
+                const response = await fetch('/connected');
+                const connected = await response.json();
+                if (connected.length === 0) {
+                    elements.connectedList.textContent = '-';
+                } else {
+                    elements.connectedList.textContent = connected.join(', ');
+                }
+            } catch (err) {
+                console.error('Failed to load visitors:', err);
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

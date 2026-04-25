@@ -1,0 +1,12 @@
+filetransfer
+filetransfer-linux-*
+filetransfer-windows-*.exe
+seeds
+dist/
+
+downloads/
+shared/
+
+testfile.txt
+*.log
+.DS_Store
